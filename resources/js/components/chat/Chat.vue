@@ -66,7 +66,9 @@
               />
             </div>
             <div class="msg_cotainer">
-              Телеграм https://t.me/totsamiyparen
+              На площадке запрещен обмен контактами. Поэтому передаю тут. Напишите мне в
+              телеграм https://t.me/totsamiyparen. Либо WhatsApp +7912-651-04-64 Все
+              обсудим
               <span class="msg_time">8:40 AM, Today</span>
             </div>
           </div>
