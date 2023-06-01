@@ -57,7 +57,7 @@
           </div>
         </div>
         <div class="card-body msg_card_body">
-          <message></message>
+          <!-- <message></message> -->
           <div class="d-flex justify-content-start mb-4">
             <div class="img_cont_msg">
               <img
@@ -66,11 +66,11 @@
               />
             </div>
             <div class="msg_cotainer">
-              Hi, how are you samim?
+              Телеграм https://t.me/totsamiyparen
               <span class="msg_time">8:40 AM, Today</span>
             </div>
           </div>
-          <div class="d-flex justify-content-end mb-4">
+          <!-- <div class="d-flex justify-content-end mb-4">
             <div class="msg_cotainer_send">
               Hi Khalid i am good tnx how about you?
               <span class="msg_time_send">8:55 AM, Today</span>
@@ -100,7 +100,7 @@
               <span class="msg_time_send">9:05 AM, Today</span>
             </div>
             <div class="img_cont_msg">
-              <!-- <img class="rounded-circle user_img_msg" src="" />  -->
+              <img class="rounded-circle user_img_msg" src="" /> 
             </div>
           </div>
           <div class="d-flex justify-content-start mb-4">
@@ -135,7 +135,7 @@
               Bye, see you
               <span class="msg_time">9:12 AM, Today</span>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="card-footer">
           <div class="input-group">

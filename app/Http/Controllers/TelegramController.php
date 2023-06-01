@@ -49,7 +49,15 @@ class TelegramController extends Controller
 
 	public function webhook(Request $request)
 	{
-		Log::debug($request);
+		if (!is_null($request->json('message.entities')) && $request->json('message.entities.0.type') === 'bot_command') {
+			if ($request->json('message.text') === '/start') {
+				Log::debug($request->json('message.text'));
+			}
+
+			return;
+		}
+
+		Log::debug('telegram', [$request->message]);
 		return response()->json();
 	}
 }
