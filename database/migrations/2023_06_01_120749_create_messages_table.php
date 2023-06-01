@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Chat;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,13 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chats', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-			$table->string('first_name')->nullable();
-			$table->string('username')->nullable();
-			$table->string('type')->nullable();
-			$table->string('small_chat_photo')->nullable();
-			$table->datetime('last_message')->nullable();
+			$table->foreignIdFor(Chat::class)->constrained()->cascadeOnDelete();
+			$table->unsignedBigInteger('message_id');
+			$table->unsignedBigInteger('from')->nullable();
+			$table->text('text')->nullable();
+			$table->string('photo')->nullable();
+			$table->string('document')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chats');
+        Schema::dropIfExists('messages');
     }
 };

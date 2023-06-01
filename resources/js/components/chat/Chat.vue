@@ -19,7 +19,13 @@
         </div>
         <div class="card-body contacts_body">
           <ul class="contacts">
-            <contact></contact>
+            <template v-for="(chat, key) in chats" v-key="key">
+              <contact
+                :chat="chat"
+                :selectedChatId="selectedChat?.id"
+                @chat-activated="activateChat"
+              ></contact>
+            </template>
           </ul>
         </div>
       </div>
@@ -28,17 +34,14 @@
     <div class="col-md-8 col-xl-6 chat">
       <div class="card">
         <div class="card-header msg_head">
-          <div class="d-flex bd-highlight">
+          <div class="d-flex bd-highlight" v-if="selectedChat">
             <div class="img_cont">
-              <img
-                class="rounded-circle user_img"
-                src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-              />
+              <img class="rounded-circle user_img" :src="selectedChat.small_chat_photo" />
               <span class="online_icon"></span>
             </div>
             <div class="user_info">
-              <span>Chat with Khalid</span>
-              <p>1767 Messages</p>
+              <span>{{ selectedChat.first_name }}</span>
+              <p>@{{ selectedChat.username }}</p>
             </div>
 
             <!-- <div class="video_cam">
@@ -57,87 +60,9 @@
           </div>
         </div>
         <div class="card-body msg_card_body">
-          <!-- <message></message> -->
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img
-                class="rounded-circle user_img_msg"
-                src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-              />
-            </div>
-            <div class="msg_cotainer">
-              На площадке запрещен обмен контактами. Поэтому передаю тут. Напишите мне в
-              телеграм https://t.me/totsamiyparen. Либо WhatsApp +7912-651-04-64 Все
-              обсудим
-              <span class="msg_time">8:40 AM, Today</span>
-            </div>
-          </div>
-          <!-- <div class="d-flex justify-content-end mb-4">
-            <div class="msg_cotainer_send">
-              Hi Khalid i am good tnx how about you?
-              <span class="msg_time_send">8:55 AM, Today</span>
-            </div>
-            <div class="img_cont_msg">
-              <img class="rounded-circle user_img_msg" src="" />
-            </div>
-          </div>
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img
-                class="rounded-circle user_img_msg"
-                src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-              />
-            </div>
-            <div class="msg_cotainer">
-              I am good too, thank you for your chat template
-              <span class="msg_time">9:00 AM, Today</span>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end mb-4">
-            <div class="msg_cotainer_send">
-              You are welcome Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Architecto rem delectus optio non officiis nemo, omnis eum, placeat iusto
-              ipsum, tempora dolorem atque neque soluta error id mollitia voluptatum
-              harum.
-              <span class="msg_time_send">9:05 AM, Today</span>
-            </div>
-            <div class="img_cont_msg">
-              <img class="rounded-circle user_img_msg" src="" /> 
-            </div>
-          </div>
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img
-                class="rounded-circle user_img_msg"
-                src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-              />
-            </div>
-            <div class="msg_cotainer">
-              I am looking for your next templates
-              <span class="msg_time">9:07 AM, Today</span>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end mb-4">
-            <div class="msg_cotainer_send">
-              Ok, thank you have a good day
-              <span class="msg_time_send">9:10 AM, Today</span>
-            </div>
-            <div class="img_cont_msg">
-              <img class="rounded-circle user_img_msg" src="" />
-            </div>
-          </div>
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img
-                class="rounded-circle user_img_msg"
-                src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-              />
-            </div>
-            <div class="msg_cotainer">
-              Bye, see you
-              <span class="msg_time">9:12 AM, Today</span>
-            </div>
-          </div> -->
+          <template v-for="(message, key) in messages" v-key="key">
+            <message :message="message"></message>
+          </template>
         </div>
         <div class="card-footer">
           <div class="input-group">
@@ -167,12 +92,31 @@
 import Contact from "./Contact.vue";
 import Message from "./Message.vue";
 export default {
-  created() {},
+  created() {
+    this.getChats();
+  },
   data() {
-    return {};
+    return {
+      chats: null,
+      selectedChat: null,
+      messages: null,
+    };
   },
   props: {},
-  methods: {},
+  methods: {
+    getChats() {
+      axios.get("/chats").then((response) => {
+        this.chats = response.data.items;
+      });
+    },
+    activateChat(chat) {
+      this.selectedChat = chat;
+
+      axios.get(`/chats/${chat.id}/messages`).then((response) => {
+        this.messages = response.data.items;
+      });
+    },
+  },
   components: { Contact, Message },
 };
 </script>

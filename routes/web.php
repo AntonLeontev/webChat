@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
+Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);

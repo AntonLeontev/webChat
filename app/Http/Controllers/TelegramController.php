@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Telegram\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -47,11 +48,11 @@ class TelegramController extends Controller
         //
     }
 
-	public function webhook(Request $request)
+	public function webhook(Request $request, TelegramService $service)
 	{
 		if (!is_null($request->json('message.entities')) && $request->json('message.entities.0.type') === 'bot_command') {
 			if ($request->json('message.text') === '/start') {
-				Log::debug($request->json('message.text'));
+				$service->createChat($request->json('message.chat.id'));
 			}
 
 			return;
