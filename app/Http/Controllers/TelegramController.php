@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
@@ -48,6 +49,7 @@ class TelegramController extends Controller
 
 	public function webhook(Request $request)
 	{
+		Log::debug($request);
 		return response()->json();
 	}
 }
