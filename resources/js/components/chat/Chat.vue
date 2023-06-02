@@ -49,7 +49,12 @@
               <span><i class="fas fa-phone"></i></span>
             </div> -->
           </div>
-          <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+          <div class="d-flex justify-content-center bd-highlight" v-else>
+            Выберите чат
+          </div>
+          <span id="action_menu_btn" class="d-md-none">
+            <i class="fas fa-ellipsis-v"></i>
+          </span>
           <div class="action_menu">
             <ul>
               <li><i class="fas fa-user-circle"></i> View profile</li>
@@ -59,13 +64,16 @@
             </ul>
           </div>
         </div>
-        <div class="card-body msg_card_body">
+        <div class="card-body msg_card_body" ref="board">
           <template v-for="(message, key) in messages" v-key="key">
-            <message :message="message"></message>
+            <message
+              :message="message"
+              :chatImage="selectedChat.small_chat_photo"
+            ></message>
           </template>
         </div>
         <div class="card-footer">
-          <div class="input-group">
+          <div class="input-group" @keydown.enter.prevent="pushMessage">
             <!-- <div class="input-group-append">
               <span class="input-group-text attach_btn h-100"
                 ><i class="fas fa-paperclip"></i
@@ -73,13 +81,16 @@
             </div> -->
             <textarea
               class="form-control type_msg"
-              name=""
-              placeholder="Type your message..."
+              name="text"
+              placeholder="Введите сообщение..."
+              ref="messageText"
+              @keydown.ctrl.enter.stop="addNewLine"
+              @keydown.shift.enter.stop.prevent="addNewLine"
             ></textarea>
             <div class="input-group-append">
-              <span class="input-group-text send_btn h-100"
-                ><i class="fas fa-location-arrow"></i
-              ></span>
+              <span class="input-group-text send_btn h-100" @click="pushMessage">
+                <i class="fas fa-location-arrow"></i>
+              </span>
             </div>
           </div>
         </div>
@@ -89,32 +100,111 @@
 </template>
 
 <script>
+import axios from "axios";
 import Contact from "./Contact.vue";
 import Message from "./Message.vue";
+import { DateTime } from "luxon";
 export default {
   created() {
-    this.getChats();
+    this.getChats(0);
+  },
+  mounted() {
+    setTimeout(this.getChats, 5000);
+    setTimeout(this.updateMessages, 2000);
   },
   data() {
     return {
       chats: null,
       selectedChat: null,
       messages: null,
+      botId: 5866110181,
     };
   },
   props: {},
   methods: {
-    getChats() {
-      axios.get("/chats").then((response) => {
-        this.chats = response.data.items;
-      });
+    getChats(delay = 5000) {
+      axios
+        .get("/chats", { timeout: 8000 })
+        .then((response) => {
+          this.chats = response.data.items;
+
+          if (delay > 0) setTimeout(this.getChats, delay);
+        })
+        .catch((response) => {
+          alert("Ошибка обновления данных. Перезагрузите страницу");
+        });
     },
     activateChat(chat) {
       this.selectedChat = chat;
+      this.messages = null;
+      this.updateMessages(0);
+      this.markAsRead(chat);
+    },
+    updateMessages(delay = 2000) {
+      if (this.selectedChat === null) {
+        if (delay > 0) setTimeout(this.updateMessages, delay);
+        return;
+      }
 
-      axios.get(`/chats/${chat.id}/messages`).then((response) => {
-        this.messages = response.data.items;
+      axios
+        .get(`/chats/${this.selectedChat.id}/messages`, { timeout: 8000 })
+        .then((response) => {
+          if (delay > 0) setTimeout(this.updateMessages, delay);
+
+          if (this.selectedChat.id !== response.data.chat_id) return;
+
+          if (this.messages?.length >= response.data.count) return;
+
+          this.messages = response.data.items;
+          setTimeout(() => this.scrollDown("smooth"), 5);
+        })
+        .catch((response) => {
+          alert("Ошибка обновления данных. Перезагрузите страницу");
+        });
+    },
+    pushMessage() {
+      if (this.selectedChat === null) return;
+
+      let text = this.$refs.messageText.value.trim();
+
+      if (text === "") return;
+
+      this.showMessage(text);
+      this.sendMessage(text);
+    },
+    showMessage(text) {
+      this.$refs.messageText.value = "";
+
+      this.messages.push({
+        from: this.botId,
+        text: text,
+        created_at: DateTime.now().toISO(),
+        chat_id: this.selectedChat.id,
       });
+
+      setTimeout(() => this.scrollDown("smooth"), 5);
+    },
+    sendMessage(text) {
+      axios
+        .post(`/chats/${this.selectedChat.id}/messages`, {
+          text: text,
+        })
+        .then((response) => {})
+        .catch(() => alert("Ошибка при отправке"));
+    },
+    markAsRead(chat) {
+      axios.put(`/chats/${chat.id}`, {
+        is_unread: false,
+      });
+    },
+    scrollDown(behavior = "instant") {
+      let board = this.$refs.board;
+      let messages = board.querySelectorAll(".message");
+      let last = messages[messages.length - 1];
+      last.scrollIntoView({ behavior: behavior });
+    },
+    addNewLine() {
+      this.$refs.messageText.value += "\n";
     },
   },
   components: { Contact, Message },

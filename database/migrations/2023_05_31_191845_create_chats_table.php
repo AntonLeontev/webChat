@@ -18,6 +18,7 @@ return new class extends Migration
 			$table->string('type')->nullable();
 			$table->string('small_chat_photo')->nullable();
 			$table->datetime('last_message')->nullable();
+			$table->boolean('is_unread')->default(0);
             $table->timestamps();
         });
     }

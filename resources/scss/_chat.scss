@@ -145,22 +145,21 @@ html {
     margin-right: 20px;
 }
 .msg_cotainer {
+    position: relative;
+    padding: 10px;
+	width: fit-content;
     margin-top: auto;
     margin-bottom: auto;
-    margin-left: 10px;
     border-radius: 25px;
-    background-color: #82ccdd;
-    padding: 10px;
-    position: relative;
+	white-space: pre-wrap;
 }
 .msg_cotainer_send {
-    margin-top: auto;
-    margin-bottom: auto;
     margin-right: 10px;
-    border-radius: 25px;
     background-color: #78e08f;
-    padding: 10px;
-    position: relative;
+}
+.msg_cotainer_receive {
+	margin-left: 10px;
+	background-color: #82ccdd;
 }
 .msg_time {
     position: absolute;

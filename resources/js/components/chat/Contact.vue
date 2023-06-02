@@ -6,7 +6,7 @@
     <div class="d-flex bd-highlight">
       <div class="img_cont">
         <img class="rounded-circle user_img" :src="chat.small_chat_photo" />
-        <span class="unread_icon"></span>
+        <span class="unread_icon" v-if="chat.is_unread"></span>
       </div>
       <div class="user_info">
         <span class="d-block text-truncate">{{ chat.first_name }}</span>

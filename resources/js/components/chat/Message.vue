@@ -1,27 +1,55 @@
 <template>
-  <div class="d-flex justify-content-start mb-4">
-    <div class="img_cont_msg">
-      <img
-        class="rounded-circle user_img_msg"
-        src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-      />
+  <div class="d-flex justify-content-end mb-4 message" v-if="5866110181 === message.from">
+    <div class="position-relative">
+      <div class="msg_cotainer msg_cotainer_send">
+        {{ message.text }}
+      </div>
+      <span class="msg_time_send">{{ formatDate(message.created_at) }}</span>
     </div>
-    <div class="msg_cotainer">
-      Hi, how are you samim?
-      <span class="msg_time">8:40 AM, Today</span>
+    <div class="img_cont_msg">
+      <img class="rounded-circle user_img_msg" src="" />
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-start mb-4 message" v-else>
+    <div class="img_cont_msg">
+      <img class="rounded-circle user_img_msg" :src="chatImage" />
+    </div>
+    <div class="position-relative w-100">
+      <div class="msg_cotainer msg_cotainer_receive">
+        {{ message.text }}
+      </div>
+      <div class="msg_time">{{ formatDate(message.created_at) }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { DateTime } from "luxon";
 export default {
-  name: "Test",
+  name: "Message",
   created() {},
   data() {
     return {};
   },
-  props: {},
-  methods: {},
+  props: {
+    message: Object,
+    chatImage: String,
+  },
+  methods: {
+    formatDate(dateString) {
+      let dt = DateTime.fromISO(dateString);
+      if (dt.toFormat("yyyy LLL dd") === DateTime.now().toFormat("yyyy LLL dd")) {
+        return dt.toLocaleString(DateTime.TIME_SIMPLE);
+      }
+
+      return (
+        dt.toLocaleString(DateTime.TIME_SIMPLE) +
+        ", " +
+        dt.toLocaleString(DateTime.DATE_FULL)
+      );
+    },
+  },
 };
 </script>
 

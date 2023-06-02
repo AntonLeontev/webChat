@@ -17,6 +17,7 @@ class MessageCollection extends ResourceCollection
         return [
 			'count' => $this->count(),
 			'items' => $this->collection,
+			'chat_id' => $this->collection->first()->chat_id,
 		];
     }
 }

@@ -19,4 +19,5 @@ Route::get('/', function () {
 });
 
 Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
+Route::put('/chats/{chat}', [ChatController::class, 'update'])->name('chats.update');
 Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);

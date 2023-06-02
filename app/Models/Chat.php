@@ -17,6 +17,11 @@ class Chat extends Model
 		'type',
 		'small_chat_photo',
 		'last_message',
+		'is_unread',
+	];
+
+	protected $casts = [
+		'is_unread' => 'boolean',
 	];
 
 	public function messages(): HasMany
