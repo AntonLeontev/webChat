@@ -24,9 +24,20 @@ task('build', function () {
 });
 
 task('config:clear', function () {
-    cd('~/24-7-365/current');
+    cd('~/chat/current');
     run('php artisan config:clear');
     run('php artisan config:cache');
+});
+
+task('route:clear', function () {
+    cd('~/chat/current');
+    run('php artisan route:clear');
+    run('php artisan route:cache');
+});
+
+task('cache:clear', function () {
+    cd('~/chat/current');
+    run('php artisan cache:clear');
 });
 
 // Hooks

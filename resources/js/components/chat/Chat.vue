@@ -69,6 +69,7 @@
             <message
               :message="message"
               :chatImage="selectedChat.small_chat_photo"
+              :botId="botId"
             ></message>
           </template>
         </div>
@@ -117,7 +118,7 @@ export default {
       chats: null,
       selectedChat: null,
       messages: null,
-      botId: 5866110181,
+      botId: import.meta.env.VITE_TELEGRAM_ID,
     };
   },
   props: {},

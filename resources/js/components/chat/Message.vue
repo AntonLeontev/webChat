@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-end mb-4 message" v-if="5866110181 === message.from">
+  <div class="d-flex justify-content-end mb-4 message" v-if="botId == message.from">
     <div class="position-relative">
       <div class="msg_cotainer msg_cotainer_send">
         {{ message.text }}
@@ -28,13 +28,16 @@
 import { DateTime } from "luxon";
 export default {
   name: "Message",
-  created() {},
+  mounted() {
+    console.log(this.botId, this.message.from);
+  },
   data() {
     return {};
   },
   props: {
     message: Object,
     chatImage: String,
+    botId: String,
   },
   methods: {
     formatDate(dateString) {

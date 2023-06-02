@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/test', function () {
+    dd(config('nutgram.token'));
+});
+
 Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
 Route::put('/chats/{chat}', [ChatController::class, 'update'])->name('chats.update');
 Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);

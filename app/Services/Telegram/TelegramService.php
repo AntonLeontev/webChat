@@ -24,8 +24,7 @@ class TelegramService
 				'from' => $message->from->id,
 			]);
 
-			$botId = str(env('TELEGRAM_TOKEN'))->before(':')->value();
-			if ($botId == $message->from->id) {
+			if (config('nutgram.config.bot_id') == $message->from->id) {
 				$is_unread = false;
 			} else {
 				$is_unread = true;
@@ -52,7 +51,7 @@ class TelegramService
 
 		return sprintf(
 			'https://api.telegram.org/file/bot%s/%s', 
-			env('TELEGRAM_TOKEN'), 
+			config('nutgram.token'), 
 			$file->file_path
 		);
 	}
