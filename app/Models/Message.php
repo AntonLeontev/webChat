@@ -18,6 +18,7 @@ class Message extends Model
 		'from',
 		'photo',
 		'document',
+		'document_name',
 	];
 
 	public function chat(): BelongsTo

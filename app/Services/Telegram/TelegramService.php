@@ -14,27 +14,32 @@ class TelegramService
 	{	  
 	}
 
-	public function storeMessage(Message $message): void
+	public function storeMessage(Message $message): DBMessage
 	{
-		DB::transaction(function () use ($message) {
-			DBMessage::query()->create([
+		return DB::transaction(function () use ($message) {
+			$dbMessage = DBMessage::query()->create([
 				'chat_id' => $message->chat->id,
 				'message_id' => $message->message_id,
-				'text' => $message->text,
+				'text' => $message->text ?? $message->caption,
 				'from' => $message->from->id,
+				'photo' => collect($message->photo)?->last()?->file_id,
+				'document' => $message->document?->file_id,
+				'document_name' => $message->document?->file_name,
 			]);
 
 			if (config('nutgram.config.bot_id') == $message->from->id) {
-				$is_unread = false;
+				$makeUnread = false;
 			} else {
-				$is_unread = true;
+				$makeUnread = true;
 			}
 	
 			Chat::where(['id' => $message->chat->id])
 				->update([
 					'last_message' => now(),
-					'is_unread' => $is_unread,
+					'is_unread' => $makeUnread,
 				]);
+
+			return $dbMessage;
 		}, 3);
 	}
 

@@ -1,8 +1,8 @@
 <template>
   <div class="row justify-content-center h-100">
-    <div class="d-none d-md-block col-md-4 col-xl-3 chat">
+    <div class="d-none d-md-block col-md-4 col-xl-3 chat" ref="contacts">
       <div class="card mb-sm-3 mb-md-0 contacts_card">
-        <div class="card-header">
+        <!-- <div class="card-header">
           <div class="input-group">
             <input
               class="form-control search"
@@ -16,7 +16,7 @@
               ></span>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="card-body contacts_body">
           <ul class="contacts">
             <template v-for="(chat, key) in chats" v-key="key">
@@ -52,17 +52,24 @@
           <div class="d-flex justify-content-center bd-highlight" v-else>
             Выберите чат
           </div>
-          <span id="action_menu_btn" class="d-md-none">
+          <span
+            id="action_menu_btn"
+            class="d-md-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#chatsSide"
+            aria-controls="offcanvasExample"
+          >
             <i class="fas fa-ellipsis-v"></i>
           </span>
-          <div class="action_menu">
+          <!-- <div class="action_menu">
             <ul>
               <li><i class="fas fa-user-circle"></i> View profile</li>
               <li><i class="fas fa-users"></i> Add to close friends</li>
               <li><i class="fas fa-plus"></i> Add to group</li>
               <li><i class="fas fa-ban"></i> Block</li>
             </ul>
-          </div>
+          </div> -->
         </div>
         <div class="card-body msg_card_body" ref="board">
           <template v-for="(message, key) in messages" v-key="key">
@@ -70,6 +77,7 @@
               :message="message"
               :chatImage="selectedChat.small_chat_photo"
               :botId="botId"
+              @show-image="showImage"
             ></message>
           </template>
         </div>
@@ -98,12 +106,45 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="offcanvas offcanvas-start"
+    tabindex="-1"
+    id="chatsSide"
+    aria-labelledby="offcanvasExampleLabel"
+  >
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title text-white" id="offcanvasExampleLabel">Выберите чат</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="contacts">
+        <template v-for="(chat, key) in chats" v-key="key">
+          <contact
+            :chat="chat"
+            :selectedChatId="selectedChat?.id"
+            @chat-activated="activateChat"
+          ></contact>
+        </template>
+      </ul>
+    </div>
+  </div>
+  <image-modal
+    :imageUrl="imageUrl"
+    @modal-interface="(interf) => (this.modal = interf)"
+  />
 </template>
 
 <script>
 import axios from "axios";
 import Contact from "./Contact.vue";
 import Message from "./Message.vue";
+import ImageModal from "./ImageModal.vue";
 import { DateTime } from "luxon";
 export default {
   created() {
@@ -112,6 +153,8 @@ export default {
   mounted() {
     setTimeout(this.getChats, 5000);
     setTimeout(this.updateMessages, 2000);
+
+    this.chatsList = new bootstrap.Offcanvas("#chatsSide");
   },
   data() {
     return {
@@ -119,6 +162,9 @@ export default {
       selectedChat: null,
       messages: null,
       botId: import.meta.env.VITE_TELEGRAM_ID,
+      modal: null,
+      imageUrl: null,
+      chatsList: null,
     };
   },
   props: {},
@@ -136,8 +182,10 @@ export default {
         });
     },
     activateChat(chat) {
+      if (chat.id === this.selectedChat?.id) return;
       this.selectedChat = chat;
       this.messages = null;
+      this.chatsList.hide();
       this.updateMessages(0);
       this.markAsRead(chat);
     },
@@ -157,6 +205,7 @@ export default {
           if (this.messages?.length >= response.data.count) return;
 
           this.messages = response.data.items;
+
           setTimeout(() => this.scrollDown("smooth"), 5);
         })
         .catch((response) => {
@@ -198,8 +247,15 @@ export default {
         is_unread: false,
       });
     },
+    showImage(image) {
+      this.imageUrl = image;
+      this.modal.show();
+    },
     scrollDown(behavior = "instant") {
       let board = this.$refs.board;
+
+      if (board === null) return;
+
       let messages = board.querySelectorAll(".message");
       let last = messages[messages.length - 1];
       last.scrollIntoView({ behavior: behavior });
@@ -208,7 +264,7 @@ export default {
       this.$refs.messageText.value += "\n";
     },
   },
-  components: { Contact, Message },
+  components: { Contact, Message, ImageModal },
 };
 </script>
 

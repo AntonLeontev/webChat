@@ -10,13 +10,15 @@
       </div>
       <div class="user_info">
         <span class="d-block text-truncate">{{ chat.first_name }}</span>
-        <p>@{{ chat.username }}</p>
+        <p class="mb-1 text-truncate">@{{ chat.username }}</p>
+        <p class="text-truncate">{{ formatDate(chat.last_message) }}</p>
       </div>
     </div>
   </li>
 </template>
 
 <script>
+import { DateTime } from "luxon";
 export default {
   created() {},
   data() {
@@ -26,7 +28,20 @@ export default {
     chat: Object,
     selectedChatId: Number,
   },
-  methods: {},
+  methods: {
+    formatDate(dateString) {
+      let dt = DateTime.fromISO(dateString);
+      if (dt.toFormat("yyyy LLL dd") === DateTime.now().toFormat("yyyy LLL dd")) {
+        return dt.toLocaleString(DateTime.TIME_SIMPLE);
+      }
+
+      return (
+        dt.toLocaleString(DateTime.TIME_SIMPLE) +
+        ", " +
+        dt.toLocaleString(DateTime.DATE_FULL)
+      );
+    },
+  },
 };
 </script>
 

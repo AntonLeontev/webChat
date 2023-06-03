@@ -25,7 +25,7 @@ class ChatController extends Controller
 
 	public function index(Chat $chat)
 	{
-		return new MessageCollection($chat->messages);
+		return new MessageCollection($chat->messages->slice(-20)->values());
 	}
 
 	public function update(Chat $chat, UpdateChatRequest $request)

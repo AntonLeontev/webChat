@@ -51,6 +51,7 @@ html {
     color: white !important;
     height: 60px !important;
     overflow-y: auto;
+	resize: none;
 }
 .type_msg:focus {
     box-shadow: none !important;
@@ -85,6 +86,7 @@ html {
     width: 100% !important;
     padding: 5px 10px;
     margin-bottom: 15px !important;
+	cursor: pointer;
 }
 .active {
     background-color: rgba(0, 0, 0, 0.3);
@@ -125,6 +127,7 @@ html {
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 15px;
+	max-width: calc(100% - 70px - 15px);
 }
 .user_info span {
     font-size: 20px;
@@ -146,11 +149,11 @@ html {
 }
 .msg_cotainer {
     position: relative;
-    padding: 10px;
+    padding: 3px;
 	width: fit-content;
     margin-top: auto;
     margin-bottom: auto;
-    border-radius: 25px;
+    border-radius: 15px;
 	white-space: pre-wrap;
 }
 .msg_cotainer_send {
@@ -160,6 +163,29 @@ html {
 .msg_cotainer_receive {
 	margin-left: 10px;
 	background-color: #82ccdd;
+}
+.msg__photo-container {
+	border-radius: 15px;
+	overflow: hidden;
+	cursor: pointer;
+
+	img {
+		max-width: 100%;
+		max-height: 300px;
+	}
+}
+.msg__file-container {
+	display: flex;
+	align-items: center;
+	column-gap: 3px;
+	
+	a {
+		padding: 10px;
+		display: block;
+		border: 1px solid rgba(47, 66, 121, 0.76);
+		border-radius: 15px;
+		color: rgb(33, 37, 41);
+	}
 }
 .msg_time {
     position: absolute;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,8 @@ Route::get('/', function () {
 Route::get('/test', function () {
     dd(config('nutgram.token'));
 });
+
+Route::get('/telegram/files/{id}', [TelegramController::class, 'getFileUrl'])->name('telegram.getFile');
 
 Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
 Route::put('/chats/{chat}', [ChatController::class, 'update'])->name('chats.update');

@@ -22,6 +22,7 @@ class Chat extends Model
 
 	protected $casts = [
 		'is_unread' => 'boolean',
+		'last_message' => 'datetime',
 	];
 
 	public function messages(): HasMany
