@@ -23,6 +23,7 @@
               <contact
                 :chat="chat"
                 :selectedChatId="selectedChat?.id"
+                :botId="botId"
                 @chat-activated="activateChat"
               ></contact>
             </template>
@@ -41,7 +42,7 @@
             </div>
             <div class="user_info">
               <span>{{ selectedChat.first_name }}</span>
-              <p>@{{ selectedChat.username }}</p>
+              <p>Сообщений: {{ messagesCount }} Показано: {{ messages?.length }}</p>
             </div>
 
             <!-- <div class="video_cam">
@@ -71,7 +72,7 @@
             </ul>
           </div> -->
         </div>
-        <div class="card-body msg_card_body" ref="board">
+        <div class="card-body msg_card_body" @scrollend="loadMessagesPortion" ref="board">
           <template v-for="(message, key) in messages" v-key="key">
             <message
               :message="message"
@@ -107,12 +108,7 @@
     </div>
   </div>
 
-  <div
-    class="offcanvas offcanvas-start"
-    tabindex="-1"
-    id="chatsSide"
-    aria-labelledby="offcanvasExampleLabel"
-  >
+  <div class="offcanvas offcanvas-start d-md-none" tabindex="-1" id="chatsSide">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title text-white" id="offcanvasExampleLabel">Выберите чат</h5>
       <button
@@ -128,6 +124,7 @@
           <contact
             :chat="chat"
             :selectedChatId="selectedChat?.id"
+            :botId="botId"
             @chat-activated="activateChat"
           ></contact>
         </template>
@@ -146,6 +143,7 @@ import Contact from "./Contact.vue";
 import Message from "./Message.vue";
 import ImageModal from "./ImageModal.vue";
 import { DateTime } from "luxon";
+import { nextTick } from "vue";
 export default {
   created() {
     this.getChats(0);
@@ -154,12 +152,16 @@ export default {
     setTimeout(this.getChats, 5000);
     setTimeout(this.updateMessages, 2000);
 
-    this.mobChatsMenu = new bootstrap.Offcanvas("#chatsSide");
+    if (window.innerWidth < 768) {
+      this.mobChatsMenu = new bootstrap.Offcanvas("#chatsSide");
+      this.mobChatsMenu.show();
+    }
   },
   data() {
     return {
       chats: null,
       selectedChat: null,
+      messagesCount: null,
       messages: null,
       botId: import.meta.env.VITE_TELEGRAM_ID,
       modal: null,
@@ -185,7 +187,8 @@ export default {
       if (chat.id === this.selectedChat?.id) return;
       this.selectedChat = chat;
       this.messages = null;
-      this.mobChatsMenu.hide();
+      this.messagesCount = 0;
+      if (this.mobChatsMenu) this.mobChatsMenu.hide();
       this.updateMessages(0);
       this.markAsRead(chat);
     },
@@ -197,19 +200,52 @@ export default {
 
       axios
         .get(`/chats/${this.selectedChat.id}/messages`, { timeout: 8000 })
-        .then((response) => {
+        .then(async (response) => {
           if (delay > 0) setTimeout(this.updateMessages, delay);
 
           if (this.selectedChat.id !== response.data.data.chat_id) return;
+          if (this.messagesCount >= response.data.meta.total) return;
 
-          if (this.messages?.length >= response.data.data.count) return;
-          console.log(response.data);
-          this.messages = response.data.data.items.reverse();
+          if (this.messages === null) {
+            this.messages = response.data.data.items.reverse();
+          } else {
+            response.data.data.items.reverse().forEach((message) => {
+              let notPresent = this.messages.every((oldMessage) => {
+                return message.id !== oldMessage.id;
+              });
 
-          setTimeout(() => this.scrollDown("smooth"), 5);
+              if (notPresent) {
+                this.messages.push(message);
+              }
+            });
+          }
+
+          this.messagesCount = response.data.meta.total;
+          await nextTick();
+          this.scrollDown("smooth");
         })
         .catch((response) => {
-          alert("Ошибка обновления данных. Перезагрузите страницу");
+          alert("Ошибка обновления сообщений. Перезагрузите страницу");
+        });
+    },
+    loadMessagesPortion() {
+      if (this.selectedChat === null) return;
+      if (this.messagesCount === this.messages?.length) return;
+      if (this.$refs.board.scrollTop > 5) return;
+
+      let scrollBottom = this.$refs.board.scrollHeight - this.$refs.board.scrollTop;
+
+      axios
+        .get(`/chats/${this.selectedChat.id}/messages/${this.messages.length}`, {
+          timeout: 4000,
+        })
+        .then(async (response) => {
+          this.messages = [...response.data.items.reverse(), ...this.messages];
+          await nextTick();
+          this.$refs.board.scrollTop = this.$refs.board.scrollHeight - scrollBottom;
+        })
+        .catch(() => {
+          alert("Не удалось загрузить ранние сообщения");
         });
     },
     pushMessage() {
@@ -222,7 +258,7 @@ export default {
       this.showMessage(text);
       this.sendMessage(text);
     },
-    showMessage(text) {
+    async showMessage(text) {
       this.$refs.messageText.value = "";
 
       this.messages.push({
@@ -232,14 +268,17 @@ export default {
         chat_id: this.selectedChat.id,
       });
 
-      setTimeout(() => this.scrollDown("smooth"), 5);
+      await nextTick();
+      this.scrollDown("smooth");
     },
     sendMessage(text) {
       axios
         .post(`/chats/${this.selectedChat.id}/messages`, {
           text: text,
         })
-        .then((response) => {})
+        .then((response) => {
+          this.messagesCount++;
+        })
         .catch(() => alert("Ошибка при отправке"));
     },
     markAsRead(chat) {

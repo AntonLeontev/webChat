@@ -48,4 +48,15 @@ class ChatController extends Controller
 
 		return response()->json();
 	}
+
+	public function messagesOffset(Chat $chat, int $offset)
+	{
+		$messages = Message::where('chat_id', $chat->id)
+			->orderByDesc('created_at')
+			->skip($offset)
+			->take(20)
+			->get();
+
+		return new MessageCollection($messages);
+	}
 }

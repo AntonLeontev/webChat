@@ -10,7 +10,10 @@
       </div>
       <div class="user_info">
         <span class="d-block text-truncate">{{ chat.first_name }}</span>
-        <p class="mb-1 text-truncate">@{{ chat.username }}</p>
+        <p class="mb-1 text-truncate">
+          {{ botId === chat.last_message_from ? "Вы:" : "" }}
+          {{ chat.last_message_text ?? "Файл" }}
+        </p>
         <p class="text-truncate">{{ formatDate(chat.last_message) }}</p>
       </div>
     </div>
@@ -27,6 +30,7 @@ export default {
   props: {
     chat: Object,
     selectedChatId: Number,
+    botId: String,
   },
   methods: {
     formatDate(dateString) {

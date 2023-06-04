@@ -37,6 +37,8 @@ class TelegramService
 				->update([
 					'last_message' => now(),
 					'is_unread' => $makeUnread,
+					'last_message_text' => $dbMessage->text,
+					'last_message_from' => $dbMessage->from,
 				]);
 
 			return $dbMessage;
