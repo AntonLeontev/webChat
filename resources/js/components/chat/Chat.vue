@@ -154,7 +154,7 @@ export default {
     setTimeout(this.getChats, 5000);
     setTimeout(this.updateMessages, 2000);
 
-    this.chatsList = new bootstrap.Offcanvas("#chatsSide");
+    this.mobChatsMenu = new bootstrap.Offcanvas("#chatsSide");
   },
   data() {
     return {
@@ -164,7 +164,7 @@ export default {
       botId: import.meta.env.VITE_TELEGRAM_ID,
       modal: null,
       imageUrl: null,
-      chatsList: null,
+      mobChatsMenu: null,
     };
   },
   props: {},
@@ -185,7 +185,7 @@ export default {
       if (chat.id === this.selectedChat?.id) return;
       this.selectedChat = chat;
       this.messages = null;
-      this.chatsList.hide();
+      this.mobChatsMenu.hide();
       this.updateMessages(0);
       this.markAsRead(chat);
     },
@@ -200,11 +200,11 @@ export default {
         .then((response) => {
           if (delay > 0) setTimeout(this.updateMessages, delay);
 
-          if (this.selectedChat.id !== response.data.chat_id) return;
+          if (this.selectedChat.id !== response.data.data.chat_id) return;
 
-          if (this.messages?.length >= response.data.count) return;
-
-          this.messages = response.data.items;
+          if (this.messages?.length >= response.data.data.count) return;
+          console.log(response.data);
+          this.messages = response.data.data.items.reverse();
 
           setTimeout(() => this.scrollDown("smooth"), 5);
         })

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateChatRequest;
 use App\Http\Resources\ChatCollection;
 use App\Http\Resources\MessageCollection;
 use App\Models\Chat;
+use App\Models\Message;
 use App\Services\Telegram\TelegramService;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,11 @@ class ChatController extends Controller
 
 	public function index(Chat $chat)
 	{
-		return new MessageCollection($chat->messages->slice(-20)->values());
+		$messages = Message::where('chat_id', $chat->id)
+			->orderByDesc('created_at')
+			->paginate(20);
+
+		return new MessageCollection($messages);
 	}
 
 	public function update(Chat $chat, UpdateChatRequest $request)

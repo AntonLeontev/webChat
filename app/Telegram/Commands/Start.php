@@ -22,18 +22,13 @@ class Start extends Command
     {
         $chat = $bot->getChat($bot->message()->chat->id);
 
-		$photo = $this->service->downloadFile($chat->photo->small_file_id);
-		$path = "chats/{$chat->id}.jpg";
-
-		Storage::disk('images')->put($path, $photo);
-
 		Chat::updateOrCreate(
 			['id' => $chat->id],
 			[
 				'username' => $chat->username,
 				'first_name' => $chat->first_name,
 				'type' => $chat->type,
-				'small_chat_photo' => Storage::disk('images')->url($path),
+				'small_chat_photo' => route('telegram.getFile', $chat->photo->small_file_id),
 			]
 		);
 

@@ -71,6 +71,7 @@ export default {
     chatImage: String,
     botId: String,
   },
+  emits: ["show-image"],
   methods: {
     formatDate(dateString) {
       let dt = DateTime.fromISO(dateString);

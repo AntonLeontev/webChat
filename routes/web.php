@@ -19,9 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
-    dd(config('nutgram.token'));
-});
+// Route::get('/test', function () {
+//     dd(config('nutgram.token'));
+// });
 
 Route::get('/telegram/files/{id}', [TelegramController::class, 'getFileUrl'])->name('telegram.getFile');
 
