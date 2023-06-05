@@ -19,15 +19,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
-    dd(config('nutgram.token'));
-	return 'test';
-});
-
 Route::get('/telegram/files/{id}', [TelegramController::class, 'getFileUrl'])->name('telegram.getFile');
 
 Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
+Route::get('/chats/{offset}', [ChatController::class, 'chatsOffset'])->name('chats.offset')
+	->whereNumber('offset');
 Route::put('/chats/{chat}', [ChatController::class, 'update'])->name('chats.update');
+
 Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);
 Route::get('chats/{chat}/messages/{offset}', [ChatController::class, 'messagesOffset'])
 	->whereNumber('offset');

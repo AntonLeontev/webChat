@@ -17,7 +17,11 @@
             </div>
           </div>
         </div> -->
-        <div class="card-body contacts_body">
+        <div
+          class="card-body contacts_body"
+          @scrollend="loadContactsPortion"
+          ref="contactsList"
+        >
           <ul class="contacts">
             <template v-for="(chat, key) in chats" v-key="key">
               <contact
@@ -159,7 +163,7 @@ export default {
   },
   data() {
     return {
-      chats: null,
+      chats: [],
       selectedChat: null,
       messagesCount: null,
       messages: null,
@@ -175,12 +179,17 @@ export default {
       axios
         .get("/chats", { timeout: 8000 })
         .then((response) => {
-          this.chats = response.data.items;
+          this.chats = [
+            ...response.data.items,
+            ...this.chats?.slice(response.data.items.length),
+          ];
 
           if (delay > 0) setTimeout(this.getChats, delay);
         })
-        .catch((response) => {
-          alert("Ошибка обновления данных. Перезагрузите страницу");
+        .catch((error) => {
+          alert(
+            "Ошибка обновления данных. Перезагрузите страницу. Ошибка: " + error.message
+          );
         });
     },
     activateChat(chat) {
@@ -258,6 +267,17 @@ export default {
         .catch(() => {
           alert("Не удалось загрузить ранние сообщения");
         });
+    },
+    loadContactsPortion() {
+      if (
+        this.$refs.contactsList.scrollTop + this.$refs.contactsList.offsetHeight <
+        this.$refs.contactsList.scrollHeight - 5
+      )
+        return;
+
+      axios.get(`/chats/${this.chats.length}`, { timeout: 4000 }).then((response) => {
+        this.chats = [...this.chats, ...response.data.items];
+      });
     },
     pushMessage() {
       if (this.selectedChat === null) return;

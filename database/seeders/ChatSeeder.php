@@ -13,6 +13,6 @@ class ChatSeeder extends Seeder
      */
     public function run(): void
     {
-        ChatFactory::new()->count(10)->create();
+        ChatFactory::new()->count(100)->create();
     }
 }

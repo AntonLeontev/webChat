@@ -18,7 +18,19 @@ class ChatController extends Controller
 		$chats = Chat::query()
 			->whereHas('messages')
 			->orderByDesc('last_message')
-			->take(100)
+			->take(30)
+			->get();
+
+		return new ChatCollection($chats);
+	}
+
+	public function chatsOffset(int $offset)
+	{
+		$chats = Chat::query()
+			->whereHas('messages')
+			->orderByDesc('last_message')
+			->take(30)
+			->skip($offset)
 			->get();
 
 		return new ChatCollection($chats);
