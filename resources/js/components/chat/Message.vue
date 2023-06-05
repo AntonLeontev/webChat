@@ -19,14 +19,17 @@
     <div class="img_cont_msg">
       <img class="rounded-circle user_img_msg" :src="chatImage" />
     </div>
-    <div class="position-relative w-100 d-flex flex-column align-items-start">
+    <div
+      class="position-relative w-100 d-flex flex-column align-items-start"
+      ref="messageContainer"
+    >
       <div class="msg_cotainer msg_cotainer_receive">
         <div
           class="msg__photo-container"
           v-if="message.photo"
           @click="$emit('show-image', message.photo)"
         >
-          <img class="" :src="'/telegram/files/' + message.photo" alt="Photo" />
+          <img :src="`/telegram/files/${message.photo}`" :style="imgStyle" alt="Photo" />
         </div>
         <div class="msg__file-container" v-if="message.document">
           <a
@@ -89,6 +92,17 @@ export default {
   computed: {
     isSend() {
       return this.botId == this.message.from;
+    },
+    imgStyle() {
+      let style = `aspect-ratio: ${this.message.photo_width} / ${this.message.photo_height};`;
+
+      if (this.message.photo_width > this.message.photo_height) {
+        style += `width: 500px;`;
+      } else {
+        style += `height: 300px;`;
+      }
+
+      return style;
     },
   },
 };

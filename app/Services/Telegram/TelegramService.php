@@ -23,6 +23,8 @@ class TelegramService
 				'text' => $message->text ?? $message->caption,
 				'from' => $message->from->id,
 				'photo' => collect($message->photo)?->last()?->file_id,
+				'photo_height' => collect($message->photo)?->last()?->height,
+				'photo_width' => collect($message->photo)?->last()?->width,
 				'document' => $message->document?->file_id,
 				'document_name' => $message->document?->file_name,
 			]);

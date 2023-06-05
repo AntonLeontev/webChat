@@ -17,6 +17,8 @@ class Message extends Model
 		'text',
 		'from',
 		'photo',
+		'photo_height',
+		'photo_width',
 		'document',
 		'document_name',
 	];

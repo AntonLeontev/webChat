@@ -203,6 +203,11 @@ export default {
         .then(async (response) => {
           if (delay > 0) setTimeout(this.updateMessages, delay);
 
+          let firstLoad = false;
+          if (this.messages === null) {
+            firstLoad = true;
+          }
+
           if (this.selectedChat.id !== response.data.data.chat_id) return;
           if (this.messagesCount >= response.data.meta.total) return;
 
@@ -210,6 +215,8 @@ export default {
             this.messages = response.data.data.items.reverse();
           } else {
             response.data.data.items.reverse().forEach((message) => {
+              if (message.from == this.botId) return;
+
               let notPresent = this.messages.every((oldMessage) => {
                 return message.id !== oldMessage.id;
               });
@@ -222,6 +229,10 @@ export default {
 
           this.messagesCount = response.data.meta.total;
           await nextTick();
+          if (firstLoad) {
+            this.$refs.board.scrollTop = this.$refs.board.scrollHeight;
+            return;
+          }
           this.scrollDown("smooth");
         })
         .catch((response) => {
