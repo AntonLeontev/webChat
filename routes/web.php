@@ -31,6 +31,10 @@ Route::middleware('auth')->group(function () {
 	Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);
 	Route::get('chats/{chat}/messages/{offset}', [ChatController::class, 'messagesOffset'])
 		->whereNumber('offset');
+
+	Route::get('/register', function() {
+		return to_route('login');
+	});
 });
 
 Auth::routes();
