@@ -3,6 +3,9 @@
   <div class="d-flex justify-content-end mb-4 message" v-if="isSend">
     <div class="position-relative w-100 d-flex flex-column align-items-end">
       <div class="msg_cotainer msg_cotainer_send">
+        <div class="px-1 fs-8 fst-italic text-info-emphasis text-end" v-if="message.user">
+          {{ message.user.name }}{{ message.user.id === user.id ? " (это Вы)" : "" }}:
+        </div>
         <div class="p-1" v-if="message.text">
           {{ message.text }}
         </div>
@@ -73,6 +76,7 @@ export default {
     message: Object,
     chatImage: String,
     botId: String,
+    user: Object,
   },
   emits: ["show-image"],
   methods: {

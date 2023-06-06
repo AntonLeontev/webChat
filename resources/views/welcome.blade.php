@@ -17,7 +17,7 @@
 <body class="antialiased">
 	<div class="h-100" id="app">
 		<App>
-			<chat></chat>
+			<chat :user="{{ json_encode(auth()->user()) }}"></chat>
 		</App>
 	</div>
     

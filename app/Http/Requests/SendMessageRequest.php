@@ -23,6 +23,8 @@ class SendMessageRequest extends FormRequest
     {
         return [
             'text' => ['required', 'string'],
+			'user_id' => ['nullable', 'exists:users,id'],
+			'user_name' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

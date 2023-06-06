@@ -11,7 +11,7 @@
       <div class="user_info">
         <span class="d-block text-truncate">{{ chat.first_name }}</span>
         <p class="mb-1 text-truncate">
-          {{ botId === chat.last_message_from ? "Вы:" : "" }}
+          {{ lastMessageFrom() }}
           {{ chat.last_message_text ?? "Файл" }}
         </p>
         <p class="text-truncate">{{ formatDate(chat.last_message) }}</p>
@@ -31,6 +31,7 @@ export default {
     chat: Object,
     selectedChatId: Number,
     botId: String,
+    user: Object,
   },
   methods: {
     formatDate(dateString) {
@@ -44,6 +45,13 @@ export default {
         ", " +
         dt.toLocaleString(DateTime.DATE_FULL)
       );
+    },
+    lastMessageFrom() {
+      if (this.botId !== this.chat.last_message_from) return;
+
+      if (this.chat.last_message_user_id === this.user?.id) return "Вы: ";
+
+      return `${this.chat.last_message_user_name}: `;
     },
   },
 };

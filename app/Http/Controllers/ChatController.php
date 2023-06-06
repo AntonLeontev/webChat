@@ -40,6 +40,7 @@ class ChatController extends Controller
 	{
 		$messages = Message::where('chat_id', $chat->id)
 			->orderByDesc('created_at')
+			->with('user')
 			->paginate(20);
 
 		return new MessageCollection($messages);
@@ -65,6 +66,7 @@ class ChatController extends Controller
 	{
 		$messages = Message::where('chat_id', $chat->id)
 			->orderByDesc('created_at')
+			->with('user')
 			->skip($offset)
 			->take(20)
 			->get();

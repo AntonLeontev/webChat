@@ -28,6 +28,7 @@
                 :chat="chat"
                 :selectedChatId="selectedChat?.id"
                 :botId="botId"
+                :user="user"
                 @chat-activated="activateChat"
               ></contact>
             </template>
@@ -82,6 +83,7 @@
               :message="message"
               :chatImage="selectedChat.small_chat_photo"
               :botId="botId"
+              :user="user"
               @show-image="showImage"
             ></message>
           </template>
@@ -173,7 +175,9 @@ export default {
       mobChatsMenu: null,
     };
   },
-  props: {},
+  props: {
+    user: Object,
+  },
   methods: {
     getChats(delay = 5000) {
       axios
@@ -188,7 +192,7 @@ export default {
         })
         .catch((error) => {
           alert(
-            "Ошибка обновления данных. Перезагрузите страницу. Ошибка: " + error.message
+            "Ошибка обновления чатов. Перезагрузите страницу. Ошибка: " + error.message
           );
         });
     },
@@ -224,7 +228,7 @@ export default {
             this.messages = response.data.data.items.reverse();
           } else {
             response.data.data.items.reverse().forEach((message) => {
-              if (message.from == this.botId) return;
+              if (message.user?.id == this.user.id) return;
 
               let notPresent = this.messages.every((oldMessage) => {
                 return message.id !== oldMessage.id;
@@ -244,8 +248,11 @@ export default {
           }
           this.scrollDown("smooth");
         })
-        .catch((response) => {
-          alert("Ошибка обновления сообщений. Перезагрузите страницу");
+        .catch((error) => {
+          alert(
+            "Ошибка обновления сообщений. Перезагрузите страницу. Ошибка: " +
+              error.message
+          );
         });
     },
     loadMessagesPortion() {
@@ -264,8 +271,8 @@ export default {
           await nextTick();
           this.$refs.board.scrollTop = this.$refs.board.scrollHeight - scrollBottom;
         })
-        .catch(() => {
-          alert("Не удалось загрузить ранние сообщения");
+        .catch((error) => {
+          alert("Не удалось загрузить ранние сообщения. " + error.message);
         });
     },
     loadContactsPortion() {
@@ -297,6 +304,7 @@ export default {
         text: text,
         created_at: DateTime.now().toISO(),
         chat_id: this.selectedChat.id,
+        user: this.user,
       });
 
       await nextTick();
@@ -310,7 +318,7 @@ export default {
         .then((response) => {
           this.messagesCount++;
         })
-        .catch(() => alert("Ошибка при отправке"));
+        .catch((error) => alert("Ошибка при отправке. " + error.message));
     },
     markAsRead(chat) {
       axios.put(`/chats/${chat.id}`, {

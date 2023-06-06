@@ -27,6 +27,7 @@ class TelegramService
 				'photo_width' => collect($message->photo)?->last()?->width,
 				'document' => $message->document?->file_id,
 				'document_name' => $message->document?->file_name,
+				'user_id' => auth()->id(),
 			]);
 
 			if (config('nutgram.config.bot_id') == $message->from->id) {
@@ -41,6 +42,8 @@ class TelegramService
 					'is_unread' => $makeUnread,
 					'last_message_text' => $dbMessage->text,
 					'last_message_from' => $dbMessage->from,
+					'last_message_user_id' => auth()->id(),
+					'last_message_user_name' => auth()->user()?->name,
 				]);
 
 			return $dbMessage;

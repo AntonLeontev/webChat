@@ -17,6 +17,10 @@ class Chat extends Model
 		'type',
 		'small_chat_photo',
 		'last_message',
+		'last_message_text',
+		'last_message_from',
+		'last_message_user_id',
+		'last_message_user_name',
 		'is_unread',
 	];
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TelegramController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/register', function() {
+	return to_route('login');
+});
+Route::get('/logout', function() {
+	auth()->logout();
+	return to_route('login');
+});
 
 Route::middleware('auth')->group(function () {
 	Route::get('/', function () {
@@ -31,10 +39,6 @@ Route::middleware('auth')->group(function () {
 	Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);
 	Route::get('chats/{chat}/messages/{offset}', [ChatController::class, 'messagesOffset'])
 		->whereNumber('offset');
-
-	Route::get('/register', function() {
-		return to_route('login');
-	});
 });
 
 Auth::routes();
