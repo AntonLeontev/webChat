@@ -19,7 +19,7 @@
         </div> -->
         <div
           class="card-body contacts_body"
-          @scrollend="loadContactsPortion"
+          @scroll="loadContactsPortion"
           ref="contactsList"
         >
           <ul class="contacts">
@@ -77,7 +77,7 @@
             </ul>
           </div> -->
         </div>
-        <div class="card-body msg_card_body" @scrollend="loadMessagesPortion" ref="board">
+        <div class="card-body msg_card_body" @scroll="loadMessagesPortion" ref="board">
           <template v-for="(message, key) in readMessages" v-key="key">
             <message
               :message="message"
@@ -289,10 +289,9 @@ export default {
     loadMessagesPortion() {
       if (this.selectedChat === null) return;
       if (this.messagesCount === this.totalMessages) return;
-      if (this.$refs.board.scrollTop > 5) return;
+      if (this.$refs.board.scrollTop > 0) return;
 
       let scrollBottom = this.$refs.board.scrollHeight - this.$refs.board.scrollTop;
-      console.log("scrollBottom", scrollBottom);
 
       axios
         .get(`/chats/${this.selectedChat.id}/messages/${this.totalMessages}`, {
@@ -302,8 +301,16 @@ export default {
           let messages = response.data.items.reverse();
 
           if (messages[0].is_unread) {
+            if (this.unreadMessages.some((message) => message.id === messages[0].id)) {
+              return;
+            }
+
             this.unreadMessages = [...messages, ...this.unreadMessages];
           } else if (messages[0].is_unread === false && this.readMessages.length > 0) {
+            if (this.readMessages.some((message) => message.id === messages[0].id)) {
+              return;
+            }
+
             this.readMessages = [...messages, ...this.readMessages];
           } else {
             let read = [],
@@ -332,7 +339,7 @@ export default {
     loadContactsPortion() {
       if (
         this.$refs.contactsList.scrollTop + this.$refs.contactsList.offsetHeight <
-        this.$refs.contactsList.scrollHeight - 5
+        this.$refs.contactsList.scrollHeight
       )
         return;
 
