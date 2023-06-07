@@ -7,6 +7,21 @@ html {
     background: linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
 }
 
+body, body *, html {
+	scrollbar-color: #363b5a;
+
+	&::-webkit-scrollbar {
+		width: 6px; /* в основном для вертикальных полос прокрутки */
+		height: 6px; /* в основном для горизонтальных полос прокрутки */
+	}
+	&::-webkit-scrollbar-thumb { /* плашка-бегунок */
+		background: #363b5a;
+	}
+	&::-webkit-scrollbar-track { /* фон */
+		background: transparent;
+	}
+}
+
 .chat {
     margin-top: auto;
     margin-bottom: auto;
@@ -16,8 +31,11 @@ html {
     border-radius: 15px !important;
     background-color: rgba(0, 0, 0, 0.4) !important;
 }
+.contacts_card {
+	padding: 15px 0;
+}
 .contacts_body {
-    padding: 0.75rem 0 !important;
+    padding: 0;
     overflow-y: auto;
     white-space: nowrap;
 }
