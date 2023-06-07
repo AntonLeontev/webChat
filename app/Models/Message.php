@@ -22,7 +22,11 @@ class Message extends Model
 		'document',
 		'document_name',
 		'user_id',
-		'user_name',
+		'is_unread',
+	];
+
+	protected $casts = [
+		'is_unread' => 'boolean',
 	];
 
 	public function chat(): BelongsTo

@@ -47,7 +47,7 @@
             </div>
             <div class="user_info">
               <span>{{ selectedChat.first_name }}</span>
-              <p>Сообщений: {{ messagesCount }} Показано: {{ messages?.length }}</p>
+              <p>Сообщений: {{ messagesCount }} Показано: {{ totalMessages }}</p>
             </div>
 
             <!-- <div class="video_cam">
@@ -78,7 +78,19 @@
           </div> -->
         </div>
         <div class="card-body msg_card_body" @scrollend="loadMessagesPortion" ref="board">
-          <template v-for="(message, key) in messages" v-key="key">
+          <template v-for="(message, key) in readMessages" v-key="key">
+            <message
+              :message="message"
+              :chatImage="selectedChat.small_chat_photo"
+              :botId="botId"
+              :user="user"
+              @show-image="showImage"
+            ></message>
+          </template>
+          <div class="w-100 text-center py-3" v-show="unreadMessages.length">
+            <span class="badge text-bg-dark">Новые сообщения</span>
+          </div>
+          <template v-for="(message, key) in unreadMessages" v-key="key">
             <message
               :message="message"
               :chatImage="selectedChat.small_chat_photo"
@@ -153,6 +165,12 @@ import { nextTick } from "vue";
 export default {
   created() {
     this.getChats(0);
+
+    window.addEventListener("visibilitychange", () => {
+      if (this.selectedChat === null) return;
+
+      this.markAsRead(this.selectedChat);
+    });
   },
   mounted() {
     setTimeout(this.getChats, 5000);
@@ -168,7 +186,8 @@ export default {
       chats: [],
       selectedChat: null,
       messagesCount: null,
-      messages: null,
+      readMessages: [],
+      unreadMessages: [],
       botId: import.meta.env.VITE_TELEGRAM_ID,
       modal: null,
       imageUrl: null,
@@ -198,12 +217,15 @@ export default {
     },
     activateChat(chat) {
       if (chat.id === this.selectedChat?.id) return;
+      if (this.selectedChat) {
+        this.markAsRead(this.selectedChat);
+      }
       this.selectedChat = chat;
-      this.messages = null;
+      this.readMessages = [];
+      this.unreadMessages = [];
       this.messagesCount = 0;
       if (this.mobChatsMenu) this.mobChatsMenu.hide();
       this.updateMessages(0);
-      this.markAsRead(chat);
     },
     updateMessages(delay = 2000) {
       if (this.selectedChat === null) {
@@ -216,29 +238,12 @@ export default {
         .then(async (response) => {
           if (delay > 0) setTimeout(this.updateMessages, delay);
 
-          let firstLoad = false;
-          if (this.messages === null) {
-            firstLoad = true;
-          }
+          let firstLoad = this.totalMessages === 0;
 
           if (this.selectedChat.id !== response.data.data.chat_id) return;
           if (this.messagesCount >= response.data.meta.total) return;
 
-          if (this.messages === null) {
-            this.messages = response.data.data.items.reverse();
-          } else {
-            response.data.data.items.reverse().forEach((message) => {
-              if (message.user?.id == this.user.id) return;
-
-              let notPresent = this.messages.every((oldMessage) => {
-                return message.id !== oldMessage.id;
-              });
-
-              if (notPresent) {
-                this.messages.push(message);
-              }
-            });
-          }
+          this.sortMessages(response.data.data.items.reverse(), firstLoad);
 
           this.messagesCount = response.data.meta.total;
           await nextTick();
@@ -255,19 +260,68 @@ export default {
           );
         });
     },
+    sortMessages(messages, firstLoad = false) {
+      if (firstLoad) {
+        messages.forEach((message) => {
+          message.is_unread
+            ? this.unreadMessages.push(message)
+            : this.readMessages.push(message);
+        });
+        return;
+      }
+
+      messages.forEach((message) => {
+        if (message.user?.id == this.user.id) return;
+
+        let notPresent =
+          this.readMessages.every((oldMessage) => {
+            return message.id !== oldMessage.id;
+          }) &&
+          this.unreadMessages.every((oldMessage) => {
+            return message.id !== oldMessage.id;
+          });
+
+        if (notPresent) {
+          this.unreadMessages.push(message);
+        }
+      });
+    },
     loadMessagesPortion() {
       if (this.selectedChat === null) return;
-      if (this.messagesCount === this.messages?.length) return;
+      if (this.messagesCount === this.totalMessages) return;
       if (this.$refs.board.scrollTop > 5) return;
 
       let scrollBottom = this.$refs.board.scrollHeight - this.$refs.board.scrollTop;
+      console.log("scrollBottom", scrollBottom);
 
       axios
-        .get(`/chats/${this.selectedChat.id}/messages/${this.messages.length}`, {
+        .get(`/chats/${this.selectedChat.id}/messages/${this.totalMessages}`, {
           timeout: 4000,
         })
         .then(async (response) => {
-          this.messages = [...response.data.items.reverse(), ...this.messages];
+          let messages = response.data.items.reverse();
+
+          if (messages[0].is_unread) {
+            this.unreadMessages = [...messages, ...this.unreadMessages];
+          } else if (messages[0].is_unread === false && this.readMessages.length > 0) {
+            this.readMessages = [...messages, ...this.readMessages];
+          } else {
+            let read = [],
+              unread = [];
+
+            messages.forEach((message) => {
+              message.is_unread ? unread.push(message) : read.push(message);
+            });
+
+            if (read.length > 0) {
+              this.readMessages = [...read, ...this.readMessages];
+            }
+
+            if (unread.length > 0) {
+              this.unreadMessages = [...read, ...this.unreadMessages];
+            }
+          }
+
           await nextTick();
           this.$refs.board.scrollTop = this.$refs.board.scrollHeight - scrollBottom;
         })
@@ -293,13 +347,15 @@ export default {
 
       if (text === "") return;
 
+      this.markAsRead(this.selectedChat);
+      this.moveToRead();
       this.showMessage(text);
       this.sendMessage(text);
     },
     async showMessage(text) {
       this.$refs.messageText.value = "";
 
-      this.messages.push({
+      this.readMessages.push({
         from: this.botId,
         text: text,
         created_at: DateTime.now().toISO(),
@@ -309,6 +365,10 @@ export default {
 
       await nextTick();
       this.scrollDown("smooth");
+    },
+    moveToRead() {
+      this.readMessages = [...this.readMessages, ...this.unreadMessages];
+      this.unreadMessages = [];
     },
     sendMessage(text) {
       axios
@@ -321,9 +381,7 @@ export default {
         .catch((error) => alert("Ошибка при отправке. " + error.message));
     },
     markAsRead(chat) {
-      axios.put(`/chats/${chat.id}`, {
-        is_unread: false,
-      });
+      axios.put(`/chats/${chat.id}/messages/mark-read`);
     },
     showImage(image) {
       this.imageUrl = image;
@@ -340,6 +398,11 @@ export default {
     },
     addNewLine() {
       this.$refs.messageText.value += "\n";
+    },
+  },
+  computed: {
+    totalMessages() {
+      return this.readMessages.length + this.unreadMessages.length;
     },
   },
   components: { Contact, Message, ImageModal },

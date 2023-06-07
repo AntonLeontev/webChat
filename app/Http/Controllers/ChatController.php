@@ -18,6 +18,7 @@ class ChatController extends Controller
 		$chats = Chat::query()
 			->whereHas('messages')
 			->orderByDesc('last_message')
+			->withCount('unreadMessages')
 			->take(30)
 			->get();
 
@@ -29,6 +30,7 @@ class ChatController extends Controller
 		$chats = Chat::query()
 			->whereHas('messages')
 			->orderByDesc('last_message')
+			->withCount('unreadMessages')
 			->take(30)
 			->skip($offset)
 			->get();
@@ -46,9 +48,11 @@ class ChatController extends Controller
 		return new MessageCollection($messages);
 	}
 
-	public function update(Chat $chat, UpdateChatRequest $request)
+	public function markRead(Chat $chat)
 	{
-		$chat->update($request->validated());
+		$messages = $chat->unreadMessages->pluck('id');
+		
+		Message::whereIn('id', $messages)->update(['is_unread' => false]);
 
 		return response()->json();
 	}

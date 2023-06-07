@@ -9,7 +9,7 @@ return [
 
     // Extra or specific configurations
     'config' => [
-		'bot_id' => str(env('TELEGRAM_TOKEN'))->before(':')->value(),
+		'bot_id' => env('VITE_TELEGRAM_ID'),
 	],
 
     // Set if the service provider should automatically load

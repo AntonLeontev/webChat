@@ -28,6 +28,7 @@ class TelegramService
 				'document' => $message->document?->file_id,
 				'document_name' => $message->document?->file_name,
 				'user_id' => auth()->id(),
+				'is_unread' => $message->from->id != config('nutgram.config.bot_id'),
 			]);
 
 			if (config('nutgram.config.bot_id') == $message->from->id) {

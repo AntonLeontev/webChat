@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TelegramController;
+use App\Models\Chat;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/test', function() {
+	dd(Chat::where('id', 415803337)->withCount('unreadMessages')->first());
+});
 
 Route::get('/register', function() {
 	return to_route('login');
@@ -34,7 +39,7 @@ Route::middleware('auth')->group(function () {
 	Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
 	Route::get('/chats/{offset}', [ChatController::class, 'chatsOffset'])->name('chats.offset')
 		->whereNumber('offset');
-	Route::put('/chats/{chat}', [ChatController::class, 'update'])->name('chats.update');
+	Route::put('/chats/{chat}/messages/mark-read', [ChatController::class, 'markRead'])->name('chats.mark-read');
 	
 	Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);
 	Route::get('chats/{chat}/messages/{offset}', [ChatController::class, 'messagesOffset'])
