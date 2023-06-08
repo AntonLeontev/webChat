@@ -70,17 +70,4 @@ class TelegramService
 			$file->file_path
 		);
 	}
-
-	public function sendMessage(string $text, int $chatId): ?Message
-	{
-		$decorated = sprintf("_Отвечает %s:_\n\n%s", auth()->user()->name, $text);
-
-		$message = $this->bot->sendMessage($decorated, $chatId, null, ParseMode::MARKDOWN);
-
-		if ($message) {
-			$message->text = $text;
-		}
-
-		return $message;
-	}
 }

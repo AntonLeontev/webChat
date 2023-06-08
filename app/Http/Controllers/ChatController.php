@@ -10,6 +10,7 @@ use App\Models\Chat;
 use App\Models\Message;
 use App\Services\Telegram\TelegramService;
 use Illuminate\Http\Request;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
 class ChatController extends Controller
 {
@@ -59,7 +60,7 @@ class ChatController extends Controller
 
 	public function store(Chat $chat, SendMessageRequest $request, TelegramService $service)
 	{
-		$message = $service->sendMessage($request->text, $chat->id);
+		$message = $service->bot->sendMessage($request->text, $chat->id, null, ParseMode::MARKDOWN);
 
 		$service->storeMessage($message);
 

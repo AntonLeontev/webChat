@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TelegramController;
+use App\Http\Middleware\MarkAllMessagesAsRead;
 use App\Models\Chat;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -39,9 +40,10 @@ Route::middleware('auth')->group(function () {
 	Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
 	Route::get('/chats/{offset}', [ChatController::class, 'chatsOffset'])->name('chats.offset')
 		->whereNumber('offset');
-	Route::put('/chats/{chat}/messages/mark-read', [ChatController::class, 'markRead'])->name('chats.mark-read');
+	// Route::put('/chats/{chat}/messages/mark-read', [ChatController::class, 'markRead'])->name('chats.mark-read');
+	Route::get('/chats/{chat}/messages/', [ChatController::class, 'index'])->middleware(MarkAllMessagesAsRead::class);
 	
-	Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['index', 'store']);
+	Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['store']);
 	Route::get('chats/{chat}/messages/{offset}', [ChatController::class, 'messagesOffset'])
 		->whereNumber('offset');
 });
