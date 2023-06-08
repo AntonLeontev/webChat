@@ -165,16 +165,11 @@ import { nextTick } from "vue";
 export default {
   created() {
     this.getChats(0);
-
-    window.addEventListener("visibilitychange", () => {
-      if (this.selectedChat === null) return;
-
-      this.markAsRead(this.selectedChat);
-    });
   },
   mounted() {
     setTimeout(this.getChats, 5000);
     setTimeout(this.updateMessages, 2000);
+    setTimeout(this.markChatAsRead, 2000);
 
     if (window.innerWidth < 768) {
       this.mobChatsMenu = new bootstrap.Offcanvas("#chatsSide");
@@ -217,8 +212,8 @@ export default {
     },
     activateChat(chat) {
       if (chat.id === this.selectedChat?.id) return;
-      if (this.selectedChat) {
-        this.markAsRead(this.selectedChat);
+      if (this.selectedChat !== null) {
+        this.markChatAsRead(0);
       }
       this.selectedChat = chat;
       this.readMessages = [];
@@ -354,7 +349,7 @@ export default {
 
       if (text === "") return;
 
-      this.markAsRead(this.selectedChat);
+      this.markChatAsRead(0);
       this.moveToRead();
       this.showMessage(text);
       this.sendMessage(text);
@@ -387,8 +382,14 @@ export default {
         })
         .catch((error) => alert("Ошибка при отправке. " + error.message));
     },
-    markAsRead(chat) {
-      axios.put(`/chats/${chat.id}/messages/mark-read`);
+    markChatAsRead(delay = 2000) {
+      if (this.selectedChat !== null) {
+        axios.put(`/chats/${this.selectedChat.id}/messages/mark-read`);
+      }
+
+      if (delay > 0) {
+        setTimeout(this.markChatAsRead, delay);
+      }
     },
     showImage(image) {
       this.imageUrl = image;
