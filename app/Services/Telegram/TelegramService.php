@@ -6,6 +6,7 @@ use App\Models\Chat;
 use App\Models\Message as DBMessage;
 use Illuminate\Support\Facades\DB;
 use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
 
 class TelegramService
@@ -67,5 +68,12 @@ class TelegramService
 			config('nutgram.token'), 
 			$file->file_path
 		);
+	}
+
+	public function sendMessage(string $text, int $chatId): ?Message
+	{
+		$text = sprintf("_Отвечает %s:_\n\n%s", auth()->user()->name, $text);
+
+		return $this->bot->sendMessage($text, $chatId, null, ParseMode::MARKDOWN);
 	}
 }

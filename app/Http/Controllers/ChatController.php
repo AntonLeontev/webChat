@@ -59,7 +59,7 @@ class ChatController extends Controller
 
 	public function store(Chat $chat, SendMessageRequest $request, TelegramService $service)
 	{
-		$message = $service->bot->sendMessage($request->text, $chat->id);
+		$message = $service->sendMessage($request->text, $chat->id);
 
 		$service->storeMessage($message);
 
