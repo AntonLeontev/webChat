@@ -249,8 +249,6 @@ export default {
       }
 
       messages.forEach((message) => {
-        // if (message.user?.id == this.user.id) return;
-
         let notPresent =
           this.readMessages.every((oldMessage) => {
             return message.id !== oldMessage.id;
@@ -261,6 +259,10 @@ export default {
 
         if (notPresent) {
           this.unreadMessages.push(message);
+        }
+
+        if (message.user?.id == this.user.id) {
+          this.moveToRead();
         }
       });
     },
