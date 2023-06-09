@@ -67,6 +67,7 @@
             aria-controls="offcanvasExample"
           >
             <i class="fas fa-ellipsis-v"></i>
+            <span class="unread_icon" v-show="hasUnreadMessages"></span>
           </span>
           <!-- <div class="action_menu">
             <ul>
@@ -358,6 +359,9 @@ export default {
   computed: {
     totalMessages() {
       return this.readMessages.length + this.unreadMessages.length;
+    },
+    hasUnreadMessages() {
+      return this.chats.some((chat) => chat.unread_messages_count > 0);
     },
   },
   components: { Contact, Message, ImageModal, MessageSender },

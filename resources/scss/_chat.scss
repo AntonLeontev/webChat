@@ -161,12 +161,12 @@ body, body *, html {
 }
 .unread_icon {
     position: absolute;
-    height: 15px;
-    width: 15px;
+    height: 10px;
+    width: 10px;
     background-color: #4cd137;
     border-radius: 50%;
-    bottom: 0.2em;
-    right: 0.4em;
+    bottom: 0.1em;
+	right: 0.3em;
     border: 1.5px solid white;
 }
 .offline {
