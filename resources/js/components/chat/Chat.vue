@@ -101,26 +101,11 @@
           </template>
         </div>
         <div class="card-footer">
-          <div class="input-group" @keydown.enter.prevent="pushMessage">
-            <!-- <div class="input-group-append">
-              <span class="input-group-text attach_btn h-100"
-                ><i class="fas fa-paperclip"></i
-              ></span>
-            </div> -->
-            <textarea
-              class="form-control type_msg"
-              name="text"
-              placeholder="Введите сообщение..."
-              ref="messageText"
-              @keydown.ctrl.enter.stop="addNewLine"
-              @keydown.shift.enter.stop.prevent="addNewLine"
-            ></textarea>
-            <div class="input-group-append">
-              <span class="input-group-text send_btn h-100" @click="pushMessage">
-                <i class="fas fa-location-arrow"></i>
-              </span>
-            </div>
-          </div>
+          <message-sender
+            :chat-id="selectedChat?.id"
+            @message-send="(message) => pushMessage(message)"
+            @message-error="(error) => messageError(error)"
+          />
         </div>
       </div>
     </div>
@@ -160,6 +145,7 @@ import axios from "axios";
 import Contact from "./Contact.vue";
 import Message from "./Message.vue";
 import ImageModal from "./ImageModal.vue";
+import MessageSender from "./MessageSender.vue";
 import { DateTime } from "luxon";
 import { nextTick } from "vue";
 export default {
@@ -169,7 +155,6 @@ export default {
   mounted() {
     setTimeout(this.getChats, 5000);
     setTimeout(this.updateMessages, 2000);
-    // setTimeout(this.markChatAsRead, 2000);
 
     if (window.innerWidth < 768) {
       this.mobChatsMenu = new bootstrap.Offcanvas("#chatsSide");
@@ -212,9 +197,6 @@ export default {
     },
     activateChat(chat) {
       if (chat.id === this.selectedChat?.id) return;
-      //   if (this.selectedChat !== null) {
-      //     this.markChatAsRead(0);
-      //   }
       this.selectedChat = chat;
       this.readMessages = [];
       this.unreadMessages = [];
@@ -342,55 +324,23 @@ export default {
         this.chats = [...this.chats, ...response.data.items];
       });
     },
-    pushMessage() {
+    async pushMessage(message) {
       if (this.selectedChat === null) return;
 
-      let text = this.$refs.messageText.value.trim();
-
-      if (text === "") return;
-
-      //   this.markChatAsRead(0);
       this.moveToRead();
-      this.showMessage(text);
-      this.sendMessage(text);
-    },
-    async showMessage(text) {
-      this.$refs.messageText.value = "";
-
-      this.readMessages.push({
-        from: this.botId,
-        text: text,
-        created_at: DateTime.now().toISO(),
-        chat_id: this.selectedChat.id,
-        user: this.user,
-      });
+      this.readMessages.push(message);
+      this.messagesCount++;
 
       await nextTick();
       this.scrollDown("smooth");
+    },
+    messageError(error) {
+      alert("Сообщение не доставлено: " + error);
     },
     moveToRead() {
       this.readMessages = [...this.readMessages, ...this.unreadMessages];
       this.unreadMessages = [];
     },
-    sendMessage(text) {
-      axios
-        .post(`/chats/${this.selectedChat.id}/messages`, {
-          text: text,
-        })
-        .then((response) => {
-          this.messagesCount++;
-        })
-        .catch((error) => alert("Ошибка при отправке. " + error.message));
-    },
-    // markChatAsRead(delay = 2000) {
-    //   if (this.selectedChat !== null) {
-    //     axios.put(`/chats/${this.selectedChat.id}/messages/mark-read`);
-    //   }
-
-    //   if (delay > 0) {
-    //     setTimeout(this.markChatAsRead, delay);
-    //   }
-    // },
     showImage(image) {
       this.imageUrl = image;
       this.modal.show();
@@ -404,16 +354,13 @@ export default {
       let last = messages[messages.length - 1];
       last.scrollIntoView({ behavior: behavior });
     },
-    addNewLine() {
-      this.$refs.messageText.value += "\n";
-    },
   },
   computed: {
     totalMessages() {
       return this.readMessages.length + this.unreadMessages.length;
     },
   },
-  components: { Contact, Message, ImageModal },
+  components: { Contact, Message, ImageModal, MessageSender },
 };
 </script>
 

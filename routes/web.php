@@ -17,11 +17,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/test', function() {
-	dd(Chat::where('id', 415803337)->withCount('unreadMessages')->first());
-});
-
 Route::get('/register', function() {
 	return to_route('login');
 });
@@ -40,10 +35,16 @@ Route::middleware('auth')->group(function () {
 	Route::get('/chats', [ChatController::class, 'list'])->name('chats.index');
 	Route::get('/chats/{offset}', [ChatController::class, 'chatsOffset'])->name('chats.offset')
 		->whereNumber('offset');
-	// Route::put('/chats/{chat}/messages/mark-read', [ChatController::class, 'markRead'])->name('chats.mark-read');
-	Route::get('/chats/{chat}/messages/', [ChatController::class, 'index'])->middleware(MarkAllMessagesAsRead::class);
-	
-	Route::apiResource('chats.messages', ChatController::class)->shallow()->only(['store']);
+
+	Route::apiResource('chats.messages', ChatController::class)->shallow()
+		->only(['store', 'index'])
+		->middleware(MarkAllMessagesAsRead::class);
+		
+	Route::post('/chats/{chat}/messages/image', [ChatController::class, 'storeImageMessage'])
+		->middleware(MarkAllMessagesAsRead::class);
+	Route::post('/chats/{chat}/messages/document', [ChatController::class, 'storeDocumentMessage'])
+		->middleware(MarkAllMessagesAsRead::class);
+
 	Route::get('chats/{chat}/messages/{offset}', [ChatController::class, 'messagesOffset'])
 		->whereNumber('offset');
 });

@@ -1,13 +1,52 @@
 <template>
   <!-- Исходящее -->
   <div class="d-flex justify-content-end mb-4 message" v-if="isSend">
-    <div class="position-relative w-100 d-flex flex-column align-items-end">
+    <div
+      class="position-relative w-100 d-flex flex-column align-items-end"
+      ref="messageContainer"
+    >
       <div class="msg_cotainer msg_cotainer_send">
-        <div class="px-1 fs-8 fst-italic text-info-emphasis text-end" v-if="message.user">
-          {{ message.user.id === user.id ? "" : message.user.name }}
-        </div>
-        <div class="p-1" v-if="message.text">
-          {{ message.text }}
+        <div class="position-relative w-100 d-flex flex-column align-items-end">
+          <div
+            class="px-1 fs-8 fst-italic text-info-emphasis text-end"
+            v-if="message.user"
+          >
+            {{ message.user.id === user.id ? "" : message.user.name }}
+          </div>
+          <div
+            class="msg__photo-container"
+            v-if="message.photo"
+            @click="$emit('show-image', message.photo)"
+          >
+            <img
+              :src="`/telegram/files/${message.photo}`"
+              :style="imgStyle"
+              alt="Photo"
+            />
+          </div>
+          <div class="msg__file-container" v-if="message.document">
+            <a
+              class="document-name"
+              :href="'/telegram/files/' + message.document"
+              :download="message.document_name"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z"
+                />
+              </svg>
+              {{ message.document_name }}
+            </a>
+          </div>
+          <div class="p-1" v-if="message.text">
+            {{ message.text }}
+          </div>
         </div>
       </div>
       <span class="msg_time_send">{{ formatDate(message.created_at) }}</span>
@@ -45,7 +84,6 @@
               width="30"
               height="30"
               fill="currentColor"
-              class="bi bi-file-earmark-fill"
               viewBox="0 0 16 16"
             >
               <path

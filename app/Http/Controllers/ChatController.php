@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SendDocumentRequest;
+use App\Http\Requests\SendImageRequest;
 use App\Http\Requests\SendMessageRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Http\Resources\ChatCollection;
@@ -11,6 +13,7 @@ use App\Models\Message;
 use App\Services\Telegram\TelegramService;
 use Illuminate\Http\Request;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use SergiX44\Nutgram\Telegram\Types\Internal\InputFile;
 
 class ChatController extends Controller
 {
@@ -62,9 +65,30 @@ class ChatController extends Controller
 	{
 		$message = $service->bot->sendMessage($request->text, $chat->id, null, ParseMode::MARKDOWN);
 
-		$service->storeMessage($message);
+		$message = $service->storeMessage($message);
 
-		return response()->json();
+		return response()->json($message);
+	}
+
+	public function storeImageMessage(Chat $chat, SendImageRequest $request, TelegramService $service)
+	{
+		$message = $service->bot->sendPhoto(new InputFile($request->image->path()), $chat->id);
+
+		$message = $service->storeMessage($message);
+
+		return response()->json($message);
+	}
+
+	public function storeDocumentMessage(Chat $chat, SendDocumentRequest $request, TelegramService $service)
+	{
+		$file = $request->document;
+		$file = new InputFile($file->path(), $file->getClientOriginalName());
+		
+		$message = $service->bot->sendDocument($file, $chat->id);
+
+		$message = $service->storeMessage($message);
+
+		return response()->json($message);
 	}
 
 	public function messagesOffset(Chat $chat, int $offset)
