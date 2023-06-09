@@ -249,7 +249,7 @@ export default {
       }
 
       messages.forEach((message) => {
-        if (message.user?.id == this.user.id) return;
+        // if (message.user?.id == this.user.id) return;
 
         let notPresent =
           this.readMessages.every((oldMessage) => {
