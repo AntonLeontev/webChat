@@ -226,7 +226,7 @@ export default {
           this.messagesCount = response.data.meta.total;
           await nextTick();
           if (firstLoad) {
-            this.$refs.board.scrollTop = this.$refs.board.scrollHeight;
+            this.scrollDown();
             return;
           }
           this.scrollDown("smooth");

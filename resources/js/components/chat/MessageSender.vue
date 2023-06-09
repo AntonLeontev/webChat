@@ -37,7 +37,7 @@
           method="post"
           class="visually-hidden"
         >
-          <input type="file" name="image" />
+          <input type="file" name="image" accept="image/*" />
         </form>
         <i class="fas fa-image"></i>
       </li>
