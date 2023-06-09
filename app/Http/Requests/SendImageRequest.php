@@ -22,7 +22,7 @@ class SendImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['required', 'image', 'max:10000'],
+            'image' => ['required', 'image', 'max:5000'],
         ];
     }
 }

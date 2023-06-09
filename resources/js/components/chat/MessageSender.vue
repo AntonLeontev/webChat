@@ -91,6 +91,7 @@ export default {
       event.target.closest("li").querySelector("input").click();
     },
     async sendFile(event) {
+      if (this.chatId === null) return;
       let form = event.target.closest("form");
       let data = new FormData(form);
 

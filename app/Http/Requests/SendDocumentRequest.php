@@ -22,7 +22,7 @@ class SendDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'document' => ['required', 'file', 'max:51000'],
+            'document' => ['required', 'file', 'max:5000'],
         ];
     }
 }
