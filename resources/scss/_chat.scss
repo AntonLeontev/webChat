@@ -7,19 +7,23 @@ html {
     background: linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
 }
 
-body, body *, html {
-	scrollbar-color: #363b5a;
+body,
+body *,
+html {
+    scrollbar-color: #363b5a;
 
-	&::-webkit-scrollbar {
-		width: 6px; /* в основном для вертикальных полос прокрутки */
-		height: 6px; /* в основном для горизонтальных полос прокрутки */
-	}
-	&::-webkit-scrollbar-thumb { /* плашка-бегунок */
-		background: #363b5a;
-	}
-	&::-webkit-scrollbar-track { /* фон */
-		background: transparent;
-	}
+    &::-webkit-scrollbar {
+        width: 6px; /* в основном для вертикальных полос прокрутки */
+        height: 6px; /* в основном для горизонтальных полос прокрутки */
+    }
+    &::-webkit-scrollbar-thumb {
+        /* плашка-бегунок */
+        background: #363b5a;
+    }
+    &::-webkit-scrollbar-track {
+        /* фон */
+        background: transparent;
+    }
 }
 
 .chat {
@@ -30,10 +34,10 @@ body, body *, html {
     height: 500px;
     border-radius: 15px !important;
     background-color: rgba(0, 0, 0, 0.4) !important;
-	overflow: hidden;
+    overflow: hidden;
 }
 .contacts_card {
-	padding: 15px 0;
+    padding: 15px 0;
 }
 .contacts_body {
     padding: 0;
@@ -70,7 +74,7 @@ body, body *, html {
     color: white !important;
     height: 60px !important;
     overflow-y: auto;
-	resize: none;
+    resize: none;
 }
 .type_msg:focus {
     box-shadow: none !important;
@@ -84,34 +88,36 @@ body, body *, html {
     cursor: pointer;
 }
 .attach-menu {
-  position: absolute;
-  top: -115px;
-  left: 0px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 10px;
-  transition: all 0.3s;
-  transform: translateX(-70px);
-
-  &_active {
-    transform: translateX(0);
-  }
-
-  &__item {
-    width: 45px;
-    height: 45px;
+    position: absolute;
+    top: -115px;
+    left: 0px;
+    padding: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    border-radius: 100%;
-    background-color: rgba($color: #000000, $alpha: 0.3);
-    color: #fff;
-    list-style: none;
-    cursor: pointer;
+    row-gap: 10px;
     transition: all 0.3s;
-  }
+    transform: rotateZ(-90deg);
+    transform-origin: center 150px;
+
+    &_active {
+        transform: rotateZ(0);
+    }
+
+    &__item {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100%;
+        border: solid 1px #fff;
+        background-color: #384c5e;
+        color: #fff;
+        list-style: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
 }
 .send_btn {
     border-radius: 0 15px 15px 0 !important;
@@ -135,7 +141,7 @@ body, body *, html {
     width: 100% !important;
     padding: 5px 10px;
     margin-bottom: 15px !important;
-	cursor: pointer;
+    cursor: pointer;
 }
 .active {
     background-color: rgba(0, 0, 0, 0.3);
@@ -166,7 +172,7 @@ body, body *, html {
     background-color: #4cd137;
     border-radius: 50%;
     bottom: 0.1em;
-	right: 0.3em;
+    right: 0.3em;
     border: 1.5px solid white;
 }
 .offline {
@@ -176,7 +182,7 @@ body, body *, html {
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 15px;
-	max-width: calc(100% - 70px - 15px);
+    max-width: calc(100% - 70px - 15px);
 }
 .user_info span {
     font-size: 20px;
@@ -199,42 +205,42 @@ body, body *, html {
 .msg_cotainer {
     position: relative;
     padding: 3px;
-	width: fit-content;
+    width: fit-content;
     margin-top: auto;
     margin-bottom: auto;
     border-radius: 15px;
-	white-space: pre-wrap;
+    white-space: pre-wrap;
 }
 .msg_cotainer_send {
     margin-right: 10px;
     background-color: #78e08f;
 }
 .msg_cotainer_receive {
-	margin-left: 10px;
-	background-color: #82ccdd;
+    margin-left: 10px;
+    background-color: #82ccdd;
 }
 .msg__photo-container {
-	border-radius: 15px;
-	overflow: hidden;
-	cursor: pointer;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
 
-	img {
-		max-width: 100%;
-		max-height: 300px;
-	}
+    img {
+        max-width: 100%;
+        max-height: 300px;
+    }
 }
 .msg__file-container {
-	display: flex;
-	align-items: center;
-	column-gap: 3px;
-	
-	a {
-		padding: 10px;
-		display: block;
-		border: 1px solid rgba(47, 66, 121, 0.76);
-		border-radius: 15px;
-		color: rgb(33, 37, 41);
-	}
+    display: flex;
+    align-items: center;
+    column-gap: 3px;
+
+    a {
+        padding: 10px;
+        display: block;
+        border: 1px solid rgba(47, 66, 121, 0.76);
+        border-radius: 15px;
+        color: rgb(33, 37, 41);
+    }
 }
 .msg_time {
     position: absolute;
