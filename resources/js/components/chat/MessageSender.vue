@@ -35,6 +35,7 @@
         <form
           :action="`chats/${this.chatId}/messages/image`"
           method="post"
+          enctype="multipart/form-data"
           class="visually-hidden"
         >
           <input type="file" name="image" accept="image/*" />
@@ -98,7 +99,7 @@ export default {
       this.uploading = true;
 
       await axios
-        .post(form.action, data)
+        .post(form.action, data, { headers: { "Content-Type": "multipart/form-data" } })
         .then((response) => this.$emit("message-send", response.data))
         .catch((error) => {
           this.$emit("message-error", error.response.data.message);

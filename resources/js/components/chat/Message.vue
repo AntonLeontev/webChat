@@ -26,7 +26,7 @@
           </div>
           <div class="msg__file-container" v-if="message.document">
             <a
-              class="document-name"
+              class="d-flex text-break"
               :href="'/telegram/files/' + message.document"
               :download="message.document_name"
             >
