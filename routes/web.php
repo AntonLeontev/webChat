@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Middleware\MarkAllMessagesAsRead;
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +24,8 @@ Route::get('/logout', function () {
 
     return to_route('login');
 });
+
+Route::post('webhooks/telegram', [TelegramController::class, 'webhook'])->withoutMiddleware(VerifyCsrfToken::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {

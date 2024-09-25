@@ -14,8 +14,9 @@ add('writable_dirs', []);
 
 // Hosts
 
-host('45.146.165.254')
-    ->set('remote_user', 'deployer')
+host('195.246.231.120')
+    ->set('port', '7381')
+    ->set('remote_user', 'djsiwozbbxu')
     ->set('deploy_path', '~/chat');
 
 task('build', function () {
