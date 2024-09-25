@@ -23,11 +23,11 @@ class UpdateChatRequest extends FormRequest
     {
         return [
             'first_name' => ['sometimes', 'string', 'max:255'],
-			'username' => ['sometimes', 'string', 'max:255'],
-			'type' => ['sometimes', 'string', 'max:255'],
-			'small_chat_photo' => ['sometimes', 'string', 'max:255'],
-			'last_message' => ['sometimes', 'date'],
-			'is_unread' => ['sometimes', 'boolean'],
+            'username' => ['sometimes', 'string', 'max:255'],
+            'type' => ['sometimes', 'string', 'max:255'],
+            'small_chat_photo' => ['sometimes', 'string', 'max:255'],
+            'last_message' => ['sometimes', 'date'],
+            'is_unread' => ['sometimes', 'boolean'],
         ];
     }
 }

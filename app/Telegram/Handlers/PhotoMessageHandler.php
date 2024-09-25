@@ -9,8 +9,8 @@ class PhotoMessageHandler
 {
     public function __invoke(Nutgram $bot): void
     {
-		$service = app(TelegramService::class);
+        $service = app(TelegramService::class);
 
-		$service->storeMessage($bot->message());
+        $service->storeMessage($bot->message());
     }
 }

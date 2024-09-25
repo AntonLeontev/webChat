@@ -15,8 +15,8 @@ class ChatCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-			'count' => $this->count(),
-			'items' => $this->collection,
-		];
+            'count' => $this->count(),
+            'items' => $this->collection,
+        ];
     }
 }

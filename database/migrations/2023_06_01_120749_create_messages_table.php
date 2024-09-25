@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-			$table->foreignIdFor(Chat::class)->constrained()->cascadeOnDelete();
-			$table->unsignedBigInteger('message_id');
-			$table->unsignedBigInteger('from')->nullable();
-			$table->text('text')->nullable();
-			$table->string('photo')->nullable();
-			$table->string('document')->nullable();
+            $table->foreignIdFor(Chat::class)->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('message_id');
+            $table->unsignedBigInteger('from')->nullable();
+            $table->text('text')->nullable();
+            $table->string('photo')->nullable();
+            $table->string('document')->nullable();
             $table->timestamps();
         });
     }

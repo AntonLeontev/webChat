@@ -10,32 +10,32 @@ class Message extends Model
 {
     use HasFactory;
 
-	protected $fillable = [
-		'id',
-		'chat_id',
-		'message_id',
-		'text',
-		'from',
-		'photo',
-		'photo_height',
-		'photo_width',
-		'document',
-		'document_name',
-		'user_id',
-		'is_unread',
-	];
+    protected $fillable = [
+        'id',
+        'chat_id',
+        'message_id',
+        'text',
+        'from',
+        'photo',
+        'photo_height',
+        'photo_width',
+        'document',
+        'document_name',
+        'user_id',
+        'is_unread',
+    ];
 
-	protected $casts = [
-		'is_unread' => 'boolean',
-	];
+    protected $casts = [
+        'is_unread' => 'boolean',
+    ];
 
-	public function chat(): BelongsTo
-	{
-		return $this->belongsTo(Chat::class);
-	}
+    public function chat(): BelongsTo
+    {
+        return $this->belongsTo(Chat::class);
+    }
 
-	public function user(): BelongsTo
-	{
-		return $this->belongsTo(User::class);
-	}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

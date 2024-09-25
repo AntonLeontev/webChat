@@ -52,7 +52,7 @@
       <span class="msg_time_send">{{ formatDate(message.created_at) }}</span>
     </div>
     <div class="img_cont_msg">
-      <img class="rounded-circle user_img_msg" src="/storage/images/avatar.jpg" />
+      <img class="rounded-circle user_img_msg" src="/avatar.jpg" />
     </div>
   </div>
 

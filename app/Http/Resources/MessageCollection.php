@@ -15,8 +15,8 @@ class MessageCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-			'items' => $this->collection,
-			'chat_id' => $this->collection->first()->chat_id,
-		];
+            'items' => $this->collection,
+            'chat_id' => $this->collection->first()->chat_id,
+        ];
     }
 }

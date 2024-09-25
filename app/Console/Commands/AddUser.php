@@ -28,18 +28,20 @@ class AddUser extends Command
     {
         $user = User::where('email', $this->argument('login'))->first();
 
-		if ($user) {
-			$this->alert('Такой логин уже существует');
-			return  Command::FAILURE;
-		}
+        if ($user) {
+            $this->alert('Такой логин уже существует');
 
-		$user = User::create([
-			'email' => $this->argument('login'),
-			'name' => $this->argument('name'),
-			'password' => bcrypt($this->argument('password')),
-		]);
+            return Command::FAILURE;
+        }
 
-		$this->info('Пользователь создан');
-		return Command::SUCCESS;
+        $user = User::create([
+            'email' => $this->argument('login'),
+            'name' => $this->argument('name'),
+            'password' => bcrypt($this->argument('password')),
+        ]);
+
+        $this->info('Пользователь создан');
+
+        return Command::SUCCESS;
     }
 }

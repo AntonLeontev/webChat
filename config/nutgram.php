@@ -9,8 +9,8 @@ return [
 
     // Extra or specific configurations
     'config' => [
-		'bot_id' => env('VITE_TELEGRAM_ID'),
-	],
+        'bot_id' => env('VITE_TELEGRAM_ID'),
+    ],
 
     // Set if the service provider should automatically load
     // handlers from /routes/telegram.php

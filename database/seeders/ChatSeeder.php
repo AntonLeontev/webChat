@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Database\Factories\ChatFactory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ChatSeeder extends Seeder

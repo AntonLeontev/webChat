@@ -1,4 +1,5 @@
 <?php
+
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
 use App\Telegram\Commands\Start;
@@ -27,6 +28,6 @@ $bot->onEditedMessage(EditedMessageHandler::class);
 $bot->onPhoto(PhotoMessageHandler::class);
 $bot->onDocument(DocumentMessageHandler::class);
 
-$bot->fallback(function(Nutgram $bot) {
-	$bot->sendMessage('Такие сообщения не поддерживаются');
+$bot->fallback(function (Nutgram $bot) {
+    $bot->sendMessage('Такие сообщения не поддерживаются');
 });

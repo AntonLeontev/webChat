@@ -19,9 +19,9 @@ class MessageFactory extends Factory
     {
         return [
             'chat_id' => Chat::inRandomOrder()->first()->id,
-			'message_id' => $this->faker->randomDigitNotZero(),
-			'text' => $this->faker->text($this->faker->numberBetween(5, 300)),
-			'from' => $this->faker->optional(50, 5866110181)->numberBetween(1111111),
+            'message_id' => $this->faker->randomDigitNotZero(),
+            'text' => $this->faker->text($this->faker->numberBetween(5, 300)),
+            'from' => $this->faker->optional(50, 5866110181)->numberBetween(1111111),
         ];
     }
 }

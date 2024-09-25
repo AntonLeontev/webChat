@@ -11,6 +11,6 @@ class DocumentMessageHandler
     {
         $service = app(TelegramService::class);
 
-		$service->storeMessage($bot->message());
+        $service->storeMessage($bot->message());
     }
 }

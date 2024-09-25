@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         JsonResource::withoutWrapping();
-		Model::preventSilentlyDiscardingAttributes();
-		Model::preventLazyLoading();
+        Model::preventSilentlyDiscardingAttributes();
+        Model::preventLazyLoading();
     }
 }

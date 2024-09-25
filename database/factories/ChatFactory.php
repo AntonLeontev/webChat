@@ -17,11 +17,11 @@ class ChatFactory extends Factory
     public function definition(): array
     {
         return [
-			'first_name' => $this->faker->firstName(),
-			'username' => $this->faker->word(),
-			'type' => $this->faker->word(),
-			// 'small_chat_photo' => ,
-			// 'last_message',
+            'first_name' => $this->faker->firstName(),
+            'username' => $this->faker->word(),
+            'type' => $this->faker->word(),
+            // 'small_chat_photo' => ,
+            // 'last_message',
         ];
     }
 }

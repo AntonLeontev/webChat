@@ -19,10 +19,10 @@ class MarkAllMessagesAsRead
         return $next($request);
     }
 
-	public function terminate(Request $request, Response $response): void
+    public function terminate(Request $request, Response $response): void
     {
-		$messages = $request->chat->unreadMessages->pluck('id');
-		
-		Message::whereIn('id', $messages)->update(['is_unread' => false]);
+        $messages = $request->chat->unreadMessages->pluck('id');
+
+        Message::whereIn('id', $messages)->update(['is_unread' => false]);
     }
 }
