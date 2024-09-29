@@ -21,13 +21,19 @@ class Start extends Command
     {
         $chat = $bot->getChat($bot->message()->chat->id);
 
+        if (! is_null($chat->photo)) {
+            $photo = route('telegram.getFile', $chat->photo?->small_file_id);
+        } else {
+            $photo = '/default_user.jpg';
+        }
+
         Chat::updateOrCreate(
             ['id' => $chat->id],
             [
                 'username' => $chat->username,
                 'first_name' => $chat->first_name,
                 'type' => $chat->type,
-                'small_chat_photo' => route('telegram.getFile', $chat->photo->small_file_id),
+                'small_chat_photo' => $photo,
             ]
         );
 

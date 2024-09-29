@@ -60,7 +60,11 @@ class TelegramService
 
     public function getDownloadLink(string $fileId): string
     {
-        $file = $this->bot->getFile($fileId);
+        try {
+            $file = $this->bot->getFile($fileId);
+        } catch (\Throwable $th) {
+            return '/default_user.jpg';
+        }
 
         return sprintf(
             'https://api.telegram.org/file/bot%s/%s',
